@@ -1,0 +1,23 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "Module_One_Plugin",
+	"Description": "Create a Hello World Output",
+	"Category": "Other",
+	"CreatedBy": "Michael Peck",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "Module_One_Plugin",
+			"Type": "Developer",
+			"LoadingPhase": "Default"
+		}
+	]
+}
