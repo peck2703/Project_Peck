@@ -7,7 +7,11 @@
 		{
 			"Name": "Project_Peck",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+      "AdditionalDependencies": [
+        "Engine",
+        "ProceduralMeshComponent"
+      ]
 		}
 	]
 }
