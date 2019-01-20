@@ -18,14 +18,14 @@ ACubeActor::ACubeActor()
 // Called when the game starts or when spawned
 void ACubeActor::BeginPlay()
 {
-	Super::BeginPlay();
+	AActor::BeginPlay();
 	
 }
 
 // Called every frame
 void ACubeActor::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
+	AActor::Tick(DeltaTime);
 
 }
 
@@ -35,14 +35,14 @@ void ACubeActor::PostActorCreated()
 	Super::PostActorCreated();
 
 	//Call the create square method
-	GenerateBoxMesh();
+	CreateSquare();
 }
 
 void ACubeActor::PostLoad()
 {
 	Super::PostLoad();
 	//Call the create square method
-	GenerateBoxMesh();
+	CreateSquare();
 }
 
 void ACubeActor::CreateSquare()
