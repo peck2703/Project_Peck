@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "CubeActor.h"
+#include "TrapezoidActor.h"
 #include "GameFramework/Actor.h"
 
 // Sets default values
-ACubeActor::ACubeActor()
+ATrapezoidActor::ATrapezoidActor()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	//Add the mesh
@@ -16,36 +16,34 @@ ACubeActor::ACubeActor()
 }
 
 // Called when the game starts or when spawned
-void ACubeActor::BeginPlay()
+void ATrapezoidActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
 // Called every frame
-void ACubeActor::Tick(float DeltaTime)
+void ATrapezoidActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-void ACubeActor::PostActorCreated()
+void ATrapezoidActor::PostActorCreated()
 {
 	//Super:: throws an error, so I placed AActor in its place for the meantime, I'll test it out and see if it'll work
 	Super::PostActorCreated();
-
-	//Call the create square method
 	GenerateBoxMesh();
 }
 
-void ACubeActor::PostLoad()
+void ATrapezoidActor::PostLoad()
 {
 	Super::PostLoad();
-	//Call the create square method
+	CreateSquare();
 	GenerateBoxMesh();
 }
 
-void ACubeActor::CreateSquare()
+void ATrapezoidActor::CreateSquare()
 {
 	//Set up a TArray to hold vertices
 	TArray<FVector> Vertices;
@@ -88,8 +86,7 @@ void ACubeActor::CreateSquare()
 	//adds a mesh section to the mesh created in constructor
 	mesh->CreateMeshSection_LinearColor(0, Vertices, Triangles, Normals, UV0, Colors, Tangents, true);
 }
-
-void ACubeActor::GenerateBoxMesh()
+void ATrapezoidActor::GenerateBoxMesh()
 {
 	//Create array of Vertices
 	TArray<FVector> Vertices;
@@ -99,7 +96,7 @@ void ACubeActor::GenerateBoxMesh()
 
 	//Create array of tangents
 	TArray<FProcMeshTangent> Tangents;
-	
+
 	//Create array of coordinate vertices to place texture
 	TArray<FVector2D> TextureCoordinates;
 
@@ -116,22 +113,22 @@ void ACubeActor::GenerateBoxMesh()
 	mesh->CreateMeshSection(0, Vertices, Triangles, Normals, TextureCoordinates, Colors, Tangents, true);
 }
 
-void ACubeActor::CreateBoxMesh(FVector BoxRadius, TArray<FVector>& Vertices, TArray<int32>& Triangles, TArray<FVector>& Normals, TArray<FVector2D>& UVs, TArray<FProcMeshTangent>& Tangents, TArray<FColor>& Colors)
+void ATrapezoidActor::CreateBoxMesh(FVector BoxRadius, TArray<FVector>& Vertices, TArray<int32>& Triangles, TArray<FVector>& Normals, TArray<FVector2D>& UVs, TArray<FProcMeshTangent>& Tangents, TArray<FColor>& Colors)
 {
 	//Set the length of the Vector array (changed value to 8)
 	FVector BoxVerts[8];
 
 	//Sets up the vertices as a normal box (sides of length 1)
-	BoxVerts[0] = FVector(-BoxRadius.X, BoxRadius.Y, BoxRadius.Z);			// (-1, 1, 1)
-	BoxVerts[1] = FVector(BoxRadius.X, BoxRadius.Y, BoxRadius.Z);			// (1, 1, 1)
-	BoxVerts[2] = FVector(BoxRadius.X, -BoxRadius.Y, BoxRadius.Z);			// (1, -1, 1)
-	BoxVerts[3] = FVector(-BoxRadius.X, -BoxRadius.Y, BoxRadius.Z);			// (-1, -1, 1)
-	BoxVerts[4] = FVector(-BoxRadius.X, BoxRadius.Y, -BoxRadius.Z);			// (-1, 1, -1)
-	BoxVerts[5] = FVector(BoxRadius.X, BoxRadius.Y, -BoxRadius.Z);			// (1, 1, -1)
-	BoxVerts[6] = FVector(BoxRadius.X, -BoxRadius.Y, -BoxRadius.Z);			// (-1, 1, 1)
-	BoxVerts[7] = FVector(-BoxRadius.X, -BoxRadius.Y, -BoxRadius.Z);		// (-1, -1, -1)
+	BoxVerts[0] = FVector(-BoxRadius.X, -BoxRadius.Y, -BoxRadius.Z);				//(-1, -1, -1)
+	BoxVerts[1] = FVector(-BoxRadius.X, BoxRadius.Y, -BoxRadius.Z);					//(-1, 1, -1)
+	BoxVerts[2] = FVector(BoxRadius.X, BoxRadius.Y, -BoxRadius.Z);					//(1, 1, -1)
+	BoxVerts[3] = FVector(BoxRadius.X, -BoxRadius.Y, -BoxRadius.Z);					//(1, -1, -1)
+	BoxVerts[4] = FVector(BoxRadius.X * 0.8, -BoxRadius.Y * 0.8, BoxRadius.Z);		//(0.8, -0.8, 1)
+	BoxVerts[5] = FVector(-BoxRadius.X * 0.8, -BoxRadius.Y * 0.8, BoxRadius.Z);		//(-0.8, -0.8, 1)
+	BoxVerts[6] = FVector(-BoxRadius.X * 0.8, BoxRadius.Y * 0.8, BoxRadius.Z);		//(-0.8, 0.8, 1)
+	BoxVerts[7] = FVector(BoxRadius.X *0.8, BoxRadius.Y * 0.8, BoxRadius.Z);		//(0.8, 0.8, 1)
 
-	//Reset the triangles
+																			//Reset the triangles
 	Triangles.Reset();
 	//6 sides for each box x 4 verts ea. face
 	const int32 NumVerts = 24;
@@ -160,19 +157,19 @@ void ACubeActor::CreateBoxMesh(FVector BoxRadius, TArray<FVector>& Vertices, TAr
 	//Add tangents based on NumVerts
 	Tangents.AddUninitialized(NumVerts);
 
-	//Initialize vertices to match up to BoxVerts
+	//Initialize vertices to Bottom
 	Vertices[0] = BoxVerts[0];
 	Vertices[1] = BoxVerts[1];
 	Vertices[2] = BoxVerts[2];
 	Vertices[3] = BoxVerts[3];
 
 	//Adding Triangles
+	Triangles.Add(1);
 	Triangles.Add(0);
-	Triangles.Add(1);
 	Triangles.Add(3);
-	Triangles.Add(1);
+	Triangles.Add(3);
 	Triangles.Add(2);
-	Triangles.Add(3);
+	Triangles.Add(1);
 
 	//Multiple set up of normals to (0,0,1)
 	Normals[0] = Normals[1] = Normals[2] = Normals[3] = FVector(0, 0, 1);
@@ -180,10 +177,10 @@ void ACubeActor::CreateBoxMesh(FVector BoxRadius, TArray<FVector>& Vertices, TAr
 	//Multiple set up of tangents to (0, -1, 0)
 	Tangents[0] = Tangents[1] = Tangents[2] = Tangents[3] = FProcMeshTangent(0.f, -1.f, 0.f);
 
-	//Intialize more vertices to match up to BoxVerts
+	//Intialize more vertices Top
 	Vertices[4] = BoxVerts[4];
-	Vertices[5] = BoxVerts[0];
-	Vertices[6] = BoxVerts[3];
+	Vertices[5] = BoxVerts[5];
+	Vertices[6] = BoxVerts[6];
 	Vertices[7] = BoxVerts[7];
 
 	//Adding triangles
@@ -200,11 +197,11 @@ void ACubeActor::CreateBoxMesh(FVector BoxRadius, TArray<FVector>& Vertices, TAr
 	//Multiple set up of tangents to (0, -1, 0)
 	Tangents[4] = Tangents[5] = Tangents[6] = Tangents[7] = FProcMeshTangent(0.f, -1.f, 0.f);
 
-	//Initialize more vertices to match up to BoxVerts
-	Vertices[8] = BoxVerts[5];
+	//Initialize more vertices Left
+	Vertices[8] = BoxVerts[0];
 	Vertices[9] = BoxVerts[1];
-	Vertices[10] = BoxVerts[0];
-	Vertices[11] = BoxVerts[4];
+	Vertices[10] = BoxVerts[6];
+	Vertices[11] = BoxVerts[5];
 
 	//Adding triangles
 	Triangles.Add(8);
@@ -220,11 +217,11 @@ void ACubeActor::CreateBoxMesh(FVector BoxRadius, TArray<FVector>& Vertices, TAr
 	//Multiple set up of tangents to (-1, 0, 0)
 	Tangents[8] = Tangents[9] = Tangents[10] = Tangents[11] = FProcMeshTangent(-1.f, 0.f, 0.f);
 
-	//Initialize more vertices to match up to BoxVerts
-	Vertices[12] = BoxVerts[6];
-	Vertices[13] = BoxVerts[2];
-	Vertices[14] = BoxVerts[1];
-	Vertices[15] = BoxVerts[5];
+	//Initialize more vertices Front
+	Vertices[12] = BoxVerts[0];
+	Vertices[13] = BoxVerts[5];
+	Vertices[14] = BoxVerts[4];
+	Vertices[15] = BoxVerts[3];
 
 	//Adding triangles
 	Triangles.Add(12);
@@ -240,11 +237,11 @@ void ACubeActor::CreateBoxMesh(FVector BoxRadius, TArray<FVector>& Vertices, TAr
 	//Multiple set up of tangents to (0, 1, 0)
 	Tangents[12] = Tangents[13] = Tangents[14] = Tangents[15] = FProcMeshTangent(0.f, 1.f, 0.f);
 
-	//Initialize more vertices to match up to BoxVerts
-	Vertices[16] = BoxVerts[7];
+	//Initialize more vertices Right
+	Vertices[16] = BoxVerts[2];
 	Vertices[17] = BoxVerts[3];
-	Vertices[18] = BoxVerts[2];
-	Vertices[19] = BoxVerts[6];
+	Vertices[18] = BoxVerts[4];
+	Vertices[19] = BoxVerts[7];
 
 	//Adding triangles
 	Triangles.Add(16);
@@ -260,19 +257,19 @@ void ACubeActor::CreateBoxMesh(FVector BoxRadius, TArray<FVector>& Vertices, TAr
 	//Multiple set up of tangents to (1, 0, 0)
 	Tangents[16] = Tangents[17] = Tangents[18] = Tangents[19] = FProcMeshTangent(1.f, 0.f, 0.f);
 
-	//Initialize more vertices to match up to BoxVerts
-	Vertices[20] = BoxVerts[7];
+	//Initialize more vertices Back
+	Vertices[20] = BoxVerts[1];
 	Vertices[21] = BoxVerts[6];
-	Vertices[22] = BoxVerts[5];
-	Vertices[23] = BoxVerts[4];
+	Vertices[22] = BoxVerts[7];
+	Vertices[23] = BoxVerts[2];
 
 	//Adding triangles
 	Triangles.Add(20);
-	Triangles.Add(21);
 	Triangles.Add(23);
 	Triangles.Add(21);
+	Triangles.Add(23);
 	Triangles.Add(22);
-	Triangles.Add(23);
+	Triangles.Add(21);
 
 	//Multiple set up of normals to (0, 0, -1)
 	Normals[20] = Normals[21] = Normals[22] = Normals[23] = FVector(0, 0, -1);
